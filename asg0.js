@@ -17,46 +17,77 @@ function clearCanvas() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+// Helper: read a Vector3 from two input boxes
+function readVector(xId, yId) {
+  const x = parseFloat(document.getElementById(xId).value);
+  const y = parseFloat(document.getElementById(yId).value);
+  return new Vector3([x, y, 0]);
+}
+
+// Step 3–4 draw button: just draw v1 (red) and v2 (blue)
 function handleDrawEvent() {
   clearCanvas();
 
-  // Read v1
-  const v1x = parseFloat(document.getElementById('v1x').value);
-  const v1y = parseFloat(document.getElementById('v1y').value);
-  const v1 = new Vector3([v1x, v1y, 0]);
+  const v1 = readVector('v1x', 'v1y');
+  const v2 = readVector('v2x', 'v2y');
 
-  // Read v2
-  const v2x = parseFloat(document.getElementById('v2x').value);
-  const v2y = parseFloat(document.getElementById('v2y').value);
-  const v2 = new Vector3([v2x, v2y, 0]);
+  drawVector(v1, "red");
+  drawVector(v2, "blue");
+}
+
+// Step 5+ operation button: draw v1/v2, then perform selected op
+function handleDrawOperationEvent() {
+  clearCanvas();
+
+  const v1 = readVector('v1x', 'v1y');
+  const v2 = readVector('v2x', 'v2y');
 
   // Always draw originals
   drawVector(v1, "red");
   drawVector(v2, "blue");
 
-  // Operation selector
   const op = document.getElementById('op').value;
+  const s = parseFloat(document.getElementById('scalar').value);
 
-  if (op === "magnitude") {
+  if (op === "add") {
+    const v3 = new Vector3([v1.elements[0], v1.elements[1], 0]).add(v2);
+    drawVector(v3, "green");
+  }
+  else if (op === "sub") {
+    const v3 = new Vector3([v1.elements[0], v1.elements[1], 0]).sub(v2);
+    drawVector(v3, "green");
+  }
+  else if (op === "mul") {
+    const v3 = new Vector3([v1.elements[0], v1.elements[1], 0]).mul(s);
+    const v4 = new Vector3([v2.elements[0], v2.elements[1], 0]).mul(s);
+    drawVector(v3, "green");
+    drawVector(v4, "green");
+  }
+  else if (op === "div") {
+    const v3 = new Vector3([v1.elements[0], v1.elements[1], 0]).div(s);
+    const v4 = new Vector3([v2.elements[0], v2.elements[1], 0]).div(s);
+    drawVector(v3, "green");
+    drawVector(v4, "green");
+  }
+  else if (op === "magnitude") {
     console.log("v1 magnitude:", v1.magnitude());
     console.log("v2 magnitude:", v2.magnitude());
 
-    // Draw normalized vectors in green
     const nv1 = new Vector3([v1.elements[0], v1.elements[1], 0]).normalize();
     const nv2 = new Vector3([v2.elements[0], v2.elements[1], 0]).normalize();
     drawVector(nv1, "green");
     drawVector(nv2, "green");
-  } 
+  }
   else if (op === "normalize") {
     const nv1 = new Vector3([v1.elements[0], v1.elements[1], 0]).normalize();
     const nv2 = new Vector3([v2.elements[0], v2.elements[1], 0]).normalize();
     drawVector(nv1, "green");
     drawVector(nv2, "green");
-  } 
+  }
   else if (op === "angle") {
     const a = angleBetween(v1, v2);
     console.log("Angle between v1 and v2 (degrees):", a);
-  } 
+  }
   else if (op === "area") {
     const area = areaTriangle(v1, v2);
     console.log("Area of triangle formed by v1 and v2:", area);
@@ -86,7 +117,7 @@ function angleBetween(v1, v2) {
   if (m1 === 0 || m2 === 0) return 0;
 
   let cosA = dot / (m1 * m2);
-  cosA = Math.min(1, Math.max(-1, cosA)); // clamp
+  cosA = Math.min(1, Math.max(-1, cosA));
 
   const radians = Math.acos(cosA);
   const degrees = radians * (180 / Math.PI);
@@ -95,6 +126,5 @@ function angleBetween(v1, v2) {
 
 function areaTriangle(v1, v2) {
   const cross = Vector3.cross(v1, v2);
-  const areaParallelogram = cross.magnitude();
-  return areaParallelogram / 2;
+  return cross.magnitude() / 2;
 }

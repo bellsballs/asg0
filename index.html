@@ -11,28 +11,33 @@
     </canvas>
     <br />
 
-    <!-- Vector v1 inputs -->
     v1 x: <input type="text" id="v1x" value="2.25">
     v1 y: <input type="text" id="v1y" value="2.25">
     <br />
 
-    <!-- Vector v2 inputs -->
     v2 x: <input type="text" id="v2x" value="1">
     v2 y: <input type="text" id="v2y" value="1">
     <br />
 
-    <!-- Operation selector -->
+    <input type="button" value="Draw" onclick="handleDrawEvent()">
+    <br /><br />
+
     Operation:
     <select id="op">
-      <option value="none">None</option>
+      <option value="add">Add</option>
+      <option value="sub">Sub</option>
+      <option value="mul">Mul</option>
+      <option value="div">Div</option>
       <option value="magnitude">Magnitude</option>
       <option value="normalize">Normalize</option>
       <option value="angle">Angle between</option>
       <option value="area">Area</option>
     </select>
 
-    <!-- Single draw button -->
-    <input type="button" value="Draw" onclick="handleDrawEvent()">
+    Scalar:
+    <input type="text" id="scalar" value="2">
+
+    <input type="button" value="Draw Operation" onclick="handleDrawOperationEvent()">
 
     <script src="lib/cuon-matrix-cse160.js"></script>
     <script src="asg0.js"></script>
